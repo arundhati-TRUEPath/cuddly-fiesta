@@ -1,0 +1,21 @@
+# Netlify configuration for the Career Path Services chat widget.
+# Tells Netlify where the site files are and where the serverless function lives.
+
+[build]
+  publish = "."
+  functions = "netlify/functions"
+
+# Security headers. Chat conversations may contain personal details, so we ask
+# browsers not to leak the page URL to other sites and not to guess file types.
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "geolocation=(), microphone=(), camera=()"
+
+# The chat endpoint should never be cached — every answer is unique.
+[[headers]]
+  for = "/api/chat"
+  [headers.values]
+    Cache-Control = "no-store"

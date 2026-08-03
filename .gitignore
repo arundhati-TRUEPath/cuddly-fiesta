@@ -1,0 +1,15 @@
+# Never commit secrets. The OpenAI key lives in Netlify's environment
+# variables, never in this repository.
+.env
+.env.*
+*.key
+
+# Netlify local dev
+.netlify/
+
+# Dependencies (this project has none, but just in case)
+node_modules/
+
+# OS noise
+.DS_Store
+Thumbs.db

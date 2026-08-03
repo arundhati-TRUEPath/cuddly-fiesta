@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Career Path Services — Ask Us</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   Career Path Services — support chat widget (WIRED)
+   Design: Claude Design export. Behavior: live /api/chat call.
+   Brand: Open Sans; greens #6B861F / #55691A / #ADD136
+   ============================================================ */
+
+:root{
+  --cps-green:#6B861F;
+  --cps-green-dark:#55691A;   /* white text on this = 6.0:1 */
+  --cps-green-light:#ADD136;
+  --cps-gray:#5E6970;
+  --cps-gray-light:#939EA5;
+  --ink:#2B3136;              /* body text, 12.4:1 on white */
+  --panel:#FFFFFF;
+  --surface:#F4F5F3;
+  --line:#DDE0DC;
+  --focus:#1B3A6B;
+  --radius:14px;
+  --shadow:0 6px 24px rgba(43,49,54,.18);
+}
+
+html{box-sizing:border-box}
+*,*::before,*::after{box-sizing:inherit}
+body{
+  margin:0;
+  background:transparent;
+  font-family:"Open Sans","Segoe UI",system-ui,sans-serif;
+  font-size:16px;
+  line-height:1.5;
+  color:var(--ink);
+  -webkit-text-size-adjust:100%;
+}
+a{color:var(--cps-green-dark)}
+a:hover{color:var(--cps-green)}
+
+/* --- 1. collapsed launcher ----------------------------------- */
+.cps-chat-launcher{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  width:64px;
+  height:64px;
+  border:none;
+  border-radius:50%;
+  background:var(--cps-green-dark);
+  color:#fff;
+  box-shadow:var(--shadow);
+  cursor:pointer;
+}
+.cps-chat-launcher:hover{background:#4A5B16}
+.cps-chat-launcher svg{width:30px;height:30px;display:block}
+.cps-chat-launcher[hidden]{display:none}
+
+/* --- 2. expanded panel -------------------------------------- */
+.cps-chat-panel{
+  display:flex;
+  flex-direction:column;
+  width:380px;
+  height:560px;
+  max-width:100vw;
+  max-height:100vh;
+  background:var(--panel);
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  box-shadow:var(--shadow);
+  overflow:hidden;
+}
+.cps-chat-panel[hidden]{display:none}
+
+/* header */
+.cps-chat-header{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding:12px 12px 12px 18px;
+  background:var(--cps-green-dark);
+  color:#fff;
+}
+.cps-chat-logo{
+  flex:none;
+  width:38px;
+  height:38px;
+  border-radius:8px;
+  background:#fff;
+  padding:3px;
+  object-fit:contain;
+}
+.cps-chat-title{
+  margin:0;
+  flex:1;
+  min-width:0;
+  font-size:17px;
+  font-weight:600;
+  line-height:1.25;
+}
+.cps-chat-title small{
+  display:block;
+  font-size:13px;
+  font-weight:400;
+  color:#E4EBD2;
+}
+.cps-chat-close{
+  flex:none;
+  width:44px;
+  height:44px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  border:none;
+  border-radius:8px;
+  background:transparent;
+  color:#fff;
+  cursor:pointer;
+}
+.cps-chat-close:hover{background:rgba(255,255,255,.18)}
+.cps-chat-close svg{width:20px;height:20px;display:block}
+
+/* scrolling conversation */
+#log{
+  flex:1 1 auto;
+  overflow-y:auto;
+  -webkit-overflow-scrolling:touch;
+  padding:18px 16px 8px;
+  background:var(--surface);
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+}
+
+/* message bubbles */
+.msg{
+  max-width:82%;
+  padding:11px 15px;
+  font-size:16px;
+  line-height:1.45;
+  border-radius:16px;
+  overflow-wrap:break-word;
+  text-wrap:pretty;
+}
+.msg.bot{
+  align-self:flex-start;
+  background:#fff;
+  color:var(--ink);
+  border:1px solid var(--line);
+  border-bottom-left-radius:5px;
+}
+.msg.user{
+  align-self:flex-end;
+  background:var(--cps-green-dark);
+  color:#fff;
+  border-bottom-right-radius:5px;
+}
+.msg p{margin:0;white-space:pre-line}
+.msg p + p{margin-top:.6em}
+.msg a{color:inherit}
+
+/* typing indicator */
+.typing{
+  align-self:flex-start;
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  padding:14px 16px;
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:16px;
+  border-bottom-left-radius:5px;
+}
+.typing span{
+  width:8px;height:8px;border-radius:50%;
+  background:var(--cps-gray-light);
+  animation:cps-typing 1.2s ease-in-out infinite;
+}
+.typing span:nth-child(2){animation-delay:.18s}
+.typing span:nth-child(3){animation-delay:.36s}
+@keyframes cps-typing{
+  0%,60%,100%{opacity:.35;transform:translateY(0)}
+  30%{opacity:1;transform:translateY(-3px)}
+}
+@media (prefers-reduced-motion:reduce){
+  .typing span{animation:none;opacity:.6}
+}
+
+/* example questions (empty state) */
+.cps-chat-suggestions{
+  align-self:stretch;
+  list-style:none;
+  margin:2px 0 6px;
+  padding:0;
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+}
+.cps-chat-suggestions button{
+  width:100%;
+  min-height:44px;
+  padding:10px 16px;
+  text-align:left;
+  font:inherit;
+  font-size:16px;
+  color:var(--cps-green-dark);
+  background:#fff;
+  border:1px solid var(--cps-green);
+  border-radius:22px;
+  cursor:pointer;
+}
+.cps-chat-suggestions button:hover{
+  background:#F1F5E4;
+  border-color:var(--cps-green-dark);
+}
+
+/* input row */
+#form{
+  flex:none;
+  display:flex;
+  align-items:flex-end;
+  gap:10px;
+  padding:12px;
+  background:#fff;
+  border-top:1px solid var(--line);
+}
+#input{
+  flex:1 1 auto;
+  min-width:0;
+  min-height:48px;
+  padding:12px 14px;
+  font:inherit;
+  font-size:16px;
+  color:var(--ink);
+  background:#fff;
+  border:1px solid var(--cps-gray-light);
+  border-radius:24px;
+}
+#input::placeholder{color:#6C767C}
+#send{
+  flex:none;
+  min-height:48px;
+  min-width:48px;
+  padding:0 20px;
+  font:inherit;
+  font-size:16px;
+  font-weight:600;
+  color:#fff;
+  background:var(--cps-green-dark);
+  border:none;
+  border-radius:24px;
+  cursor:pointer;
+}
+#send:hover{background:#4A5B16}
+#send:disabled{background:var(--cps-gray-light);cursor:default}
+#input:disabled{background:#F4F5F3}
+
+/* disclaimer */
+.cps-chat-disclaimer{
+  flex:none;
+  margin:0;
+  padding:0 16px 14px;
+  background:#fff;
+  font-size:13px;
+  line-height:1.45;
+  color:#585F65;
+}
+.cps-chat-disclaimer a{color:var(--cps-green-dark);font-weight:600}
+
+/* visible keyboard focus on every interactive element */
+.cps-chat-launcher:focus-visible,
+.cps-chat-close:focus-visible,
+.cps-chat-suggestions button:focus-visible,
+#input:focus-visible,
+#send:focus-visible,
+#log:focus-visible,
+a:focus-visible{
+  outline:3px solid var(--focus);
+  outline-offset:2px;
+}
+.cps-chat-close:focus-visible{outline-color:#fff}
+#input:focus-visible{border-color:var(--focus)}
+.cps-chat-launcher:focus,
+.cps-chat-close:focus,
+.cps-chat-suggestions button:focus,
+#input:focus,
+#send:focus{outline:3px solid var(--focus);outline-offset:2px}
+.cps-chat-close:focus{outline-color:#fff}
+
+/* screen-reader-only helper */
+.sr-only{
+  position:absolute;width:1px;height:1px;padding:0;margin:-1px;
+  overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0;
+}
+
+/* real-site placement: bottom-right corner */
+.cps-chat-dock{
+  position:fixed;
+  right:20px;
+  bottom:20px;
+  z-index:9999;
+}
+@media (max-width:480px){
+  .cps-chat-panel{width:100vw;height:100vh;border-radius:0;border:none}
+  .cps-chat-dock{right:0;bottom:0}
+  .cps-chat-dock:has(.cps-chat-panel:not([hidden])){right:0;bottom:0;top:0;left:0}
+}
+</style>
+</head>
+<body>
+
+<div class="cps-chat-dock">
+
+  <!-- collapsed launcher -->
+  <button type="button" id="chat-launcher" class="cps-chat-launcher" aria-label="Open chat with Career Path Services" aria-expanded="false">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+      <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/>
+    </svg>
+  </button>
+
+  <!-- expanded panel -->
+  <section id="chat-panel" class="cps-chat-panel" role="dialog" aria-modal="false" aria-label="Chat with Career Path Services" hidden>
+
+    <header class="cps-chat-header">
+      <img class="cps-chat-logo" src="data:image/png;base64,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" alt="" width="38" height="38">
+      <h2 class="cps-chat-title">Career Path Services <small>We're here to help you find work</small></h2>
+      <button type="button" id="chat-close" class="cps-chat-close" aria-label="Close chat">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true" focusable="false">
+          <path d="M6 6l12 12M18 6L6 18"/>
+        </svg>
+      </button>
+    </header>
+
+    <div id="log" role="log" aria-live="polite" aria-label="Conversation" tabindex="0">
+      <div class="msg bot"><p>Hi, welcome to Career Path Services. Ask me about our programs and services, or start with one of these:</p></div>
+      <ul class="cps-chat-suggestions" id="suggestions">
+        <li><button type="button">What programs do you offer?</button></li>
+        <li><button type="button">Am I eligible?</button></li>
+        <li><button type="button">How do I get started?</button></li>
+      </ul>
+    </div>
+
+    <form id="form" action="#" method="post">
+      <input id="input" name="message" type="text" placeholder="Type your message…" autocomplete="off" aria-label="Type your message" required>
+      <button id="send" type="submit">Send</button>
+    </form>
+
+    <p class="cps-chat-disclaimer">Automated assistant — may not be accurate. For anything important, please call <a href="tel:+15093267520">509-326-7520</a>.</p>
+  </section>
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  var log        = document.getElementById('log');
+  var form       = document.getElementById('form');
+  var input      = document.getElementById('input');
+  var send       = document.getElementById('send');
+  var panel      = document.getElementById('chat-panel');
+  var launcher   = document.getElementById('chat-launcher');
+  var closeBtn   = document.getElementById('chat-close');
+  var suggestions = document.getElementById('suggestions');
+
+  var PHONE = '509-326-7520';
+
+  // This array IS the bot's memory. It is resent in full on every request.
+  var messages = [];
+  var busy = false;
+
+  function scrollDown() { log.scrollTop = log.scrollHeight; }
+
+  // Build a bubble. Splits blank-line-separated text into paragraphs and uses
+  // textContent throughout, so a model reply can never inject markup.
+  function bubble(text, who) {
+    var d = document.createElement('div');
+    d.className = 'msg ' + who;
+    String(text).trim().split(/\n{2,}/).forEach(function (part) {
+      var p = document.createElement('p');
+      p.textContent = part.trim();
+      d.appendChild(p);
+    });
+    log.appendChild(d);
+    scrollDown();
+    return d;
+  }
+
+  function showTyping() {
+    var t = document.createElement('div');
+    t.className = 'typing';
+    t.setAttribute('role', 'status');
+    t.setAttribute('aria-label', 'Assistant is typing');
+    for (var i = 0; i < 3; i++) t.appendChild(document.createElement('span'));
+    log.appendChild(t);
+    scrollDown();
+    return t;
+  }
+
+  function setBusy(state) {
+    busy = state;
+    send.disabled = state;
+    input.disabled = state;
+  }
+
+  // --- open / close -------------------------------------------------
+  function openChat() {
+    panel.hidden = false;
+    launcher.hidden = true;
+    launcher.setAttribute('aria-expanded', 'true');
+    input.focus();
+    scrollDown();
+  }
+  function closeChat() {
+    panel.hidden = true;
+    launcher.hidden = false;
+    launcher.setAttribute('aria-expanded', 'false');
+    launcher.focus();
+  }
+  launcher.addEventListener('click', openChat);
+  closeBtn.addEventListener('click', closeChat);
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && !panel.hidden) closeChat();
+  });
+
+  // --- example question chips ---------------------------------------
+  if (suggestions) {
+    suggestions.querySelectorAll('button').forEach(function (b) {
+      b.addEventListener('click', function () {
+        if (busy) return;
+        input.value = b.textContent.trim();
+        if (form.requestSubmit) form.requestSubmit();
+        else form.dispatchEvent(new Event('submit', { cancelable: true }));
+      });
+    });
+  }
+
+  // --- send a message -------------------------------------------------
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    if (busy) return;
+
+    var text = input.value.trim();
+    if (!text) return;
+
+    // Retire the example questions once the visitor engages.
+    if (suggestions) { suggestions.remove(); suggestions = null; }
+
+    bubble(text, 'user');
+    messages.push({ role: 'user', content: text });
+    input.value = '';
+    setBusy(true);
+
+    var dots = showTyping();
+
+    fetch('/api/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ messages: messages })
+    })
+      .then(function (res) { return res.json(); })
+      .then(function (data) {
+        dots.remove();
+        var reply = (data && data.reply) || 'Sorry, I did not catch that.';
+        bubble(reply, 'bot');
+        messages.push({ role: 'assistant', content: reply });
+      })
+      .catch(function () {
+        dots.remove();
+        bubble('Sorry — I could not connect just now. Please call us at ' + PHONE + '.', 'bot');
+      })
+      .finally(function () {
+        setBusy(false);
+        input.focus();
+      });
+  });
+})();
+</script>
+</body>
+</html>
