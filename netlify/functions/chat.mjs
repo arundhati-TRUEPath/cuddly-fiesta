@@ -334,10 +334,163 @@ function rateLimited(ip) {
 const friendly = (msg) => Response.json({ reply: msg }, { status: 200 });
 
 // ---------------------------------------------------------------------------
+// SELF-TEST
+//
+// Visit https://YOUR-SITE.netlify.app/api/chat in a browser (a plain GET) and
+// this prints a plain-English diagnosis: is the key set, does OpenAI accept it,
+// does the configured model exist on your account, and what models DO exist.
+//
+// It never prints your API key. Once the bot is working you can delete this
+// whole section plus the `if (req.method === "GET")` line in the handler.
+// ---------------------------------------------------------------------------
+
+const plain = (s) =>
+  new Response(s, {
+    status: 200,
+    headers: { "Content-Type": "text/plain; charset=utf-8", "Cache-Control": "no-store" },
+  });
+
+async function selfTest() {
+  const L = [];
+  const say = (s = "") => L.push(s);
+
+  say("Career Path Services — chat function self-test");
+  say("=".repeat(60));
+  say("");
+
+  // --- 1. Is the key present? ---
+  const key = process.env.OPENAI_API_KEY;
+  if (!key) {
+    say("[FAIL] OPENAI_API_KEY is not set.");
+    say("");
+    say("FIX: Netlify dashboard -> your site -> Site configuration ->");
+    say("     Environment variables -> Add a single variable.");
+    say("     Key:   OPENAI_API_KEY");
+    say("     Value: your key from platform.openai.com");
+    say("     THEN REDEPLOY. Variables only apply to a new deploy.");
+    return plain(L.join("\n"));
+  }
+  say(`[ OK ] Key is set — ${key.length} characters, begins "${key.slice(0, 6)}…"`);
+  if (/\s/.test(key)) {
+    say("[WARN] The key contains a space or line break. That will break it.");
+    say("       Re-copy it from OpenAI and paste with no extra characters.");
+  }
+  if (!key.startsWith("sk-")) {
+    say('[WARN] OpenAI keys normally start with "sk-". Check you pasted the right value.');
+  }
+  say("");
+
+  // --- 2. Does OpenAI accept it? ---
+  let models = [];
+  try {
+    const r = await fetch("https://api.openai.com/v1/models", {
+      headers: { Authorization: `Bearer ${key}` },
+    });
+    if (!r.ok) {
+      const detail = (await r.text()).slice(0, 400);
+      say(`[FAIL] OpenAI rejected the key. HTTP ${r.status}`);
+      say("");
+      if (r.status === 401) {
+        say("FIX: The key is wrong, was revoked, or belongs to a different account.");
+        say("     Make a fresh one at platform.openai.com -> API keys,");
+        say("     update it in Netlify, and redeploy.");
+      } else if (r.status === 429) {
+        say("FIX: No credit on the OpenAI account.");
+        say("     platform.openai.com -> Settings -> Billing -> add a payment");
+        say("     method and load $5-10. Then set a monthly hard cap.");
+      }
+      say("");
+      say("OpenAI said: " + detail);
+      return plain(L.join("\n"));
+    }
+    const d = await r.json();
+    models = (d.data || []).map((m) => m.id).filter((id) => /^(gpt|o\d|chatgpt)/i.test(id)).sort();
+    say(`[ OK ] OpenAI accepted the key. ${models.length} usable models on this account.`);
+  } catch (e) {
+    say("[FAIL] Could not reach OpenAI at all: " + String(e).slice(0, 200));
+    return plain(L.join("\n"));
+  }
+  say("");
+
+  // --- 3. Does the configured model exist? ---
+  say(`Model configured in chat.mjs:  ${MODEL}`);
+  if (models.includes(MODEL)) {
+    say("[ OK ] That model exists on this account.");
+  } else {
+    say("[FAIL] *** THAT MODEL DOES NOT EXIST ON THIS ACCOUNT. ***");
+    say("       This is almost certainly your problem.");
+    say("");
+    say("FIX: pick one from the list at the bottom of this page, put it in");
+    say(`     the MODEL line near the top of chat.mjs, and redeploy.`);
+  }
+  say("");
+
+  // --- 4. Try a real call ---
+  say("Sending a real test message…");
+  try {
+    const r = await fetch("https://api.openai.com/v1/chat/completions", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${key}` },
+      body: JSON.stringify({
+        model: MODEL,
+        temperature: TEMPERATURE,
+        max_tokens: 20,
+        messages: [{ role: "user", content: "Reply with exactly: OK" }],
+      }),
+    });
+
+    if (r.ok) {
+      const d = await r.json();
+      say(`[ OK ] *** IT WORKS. *** Model replied: "${d?.choices?.[0]?.message?.content?.trim()}"`);
+      say("");
+      say("The chat widget should be working now. If it still isn't,");
+      say("do a hard refresh of the page (Ctrl+Shift+R / Cmd+Shift+R).");
+    } else {
+      const detail = (await r.text()).slice(0, 500);
+      say(`[FAIL] The real call failed. HTTP ${r.status}`);
+      say("");
+      if (/temperature/i.test(detail)) {
+        say("FIX: This model only accepts its default temperature.");
+        say("     In chat.mjs, delete the line that says:");
+        say("       temperature: TEMPERATURE,");
+        say("     Then redeploy.");
+      } else if (/max_tokens/i.test(detail)) {
+        say("FIX: This model wants 'max_completion_tokens' instead of 'max_tokens'.");
+        say("     In chat.mjs, rename max_tokens to max_completion_tokens (2 places).");
+      } else if (r.status === 404) {
+        say("FIX: The model name is wrong. Pick one from the list below.");
+      } else if (r.status === 429) {
+        say("FIX: Out of credit or over your rate limit. Check Billing at OpenAI.");
+      }
+      say("");
+      say("OpenAI said: " + detail);
+    }
+  } catch (e) {
+    say("[FAIL] Test call threw: " + String(e).slice(0, 200));
+  }
+
+  // --- 5. The model list ---
+  say("");
+  say("=".repeat(60));
+  say("MODELS AVAILABLE ON YOUR ACCOUNT");
+  say("Prefer a 'mini' or 'nano' one — they're much cheaper and plenty");
+  say("good for answering from a reference document.");
+  say("=".repeat(60));
+  models.forEach((m) => say("   " + m));
+
+  return plain(L.join("\n"));
+}
+
+// ---------------------------------------------------------------------------
 // HANDLER
 // ---------------------------------------------------------------------------
 
 export default async (req, context) => {
+  // Browser visit = run the diagnostic instead of the chat.
+  if (req.method === "GET") {
+    return await selfTest();
+  }
+
   if (req.method !== "POST") {
     return new Response("Method not allowed", { status: 405 });
   }
