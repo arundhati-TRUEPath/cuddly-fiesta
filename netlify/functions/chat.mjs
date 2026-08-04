@@ -14,7 +14,7 @@
 
 // Model. Check https://developers.openai.com/api/docs/pricing before launch —
 // names change. Cheap tier is plenty for answering from a reference document.
-const MODEL = "gpt-5.4-mini";
+const MODEL = "gpt-4o-mini";
 
 // 0 = robotic and repetitive, 1 = chatty and inventive. 0.4 is warm but stable.
 // If the logs complain that this model doesn't accept `temperature`, delete the
@@ -523,8 +523,6 @@ export default async (req, context) => {
       return friendly("What would you like to know?");
     }
 
-     console.log(process.env.OPENAI_API_KEY);
-
     const res = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
       headers: {
@@ -562,3 +560,4 @@ export default async (req, context) => {
 
 // Makes this function answer at https://your-site/api/chat
 export const config = { path: "/api/chat" };
+ 
