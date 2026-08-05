@@ -1,4 +1,4 @@
-// ============================================================================
+// // ============================================================================
 // Career Path Services — chat backend
 //
 // This runs on Netlify's servers, NOT in the visitor's browser. It is the only
@@ -65,14 +65,16 @@ everything else to staff.
 ## SPECIAL ROUTING: JOBS AND CAREERS
 When someone asks about jobs, careers, or open positions:
 1. First, politely ask: "Are you interested in a healthcare career?"
-2. If YES (healthcare): Share this link to our jobs at CPS:
-   https://www.careerpathservices.org/contact/
-   Then say: "Someone from our team will contact you within 2 business days
-   to discuss opportunities and answer your questions."
+2. If YES (healthcare): Share this link to TruePath Career Navigator:
+   https://truepath-frontend.whitebush-febf0411.westus2.azurecontainerapps.io/
+   Then say: "This will help you explore healthcare career paths. Someone from
+   our team will also contact you within 2 business days to discuss opportunities."
 3. If NO (not healthcare) or UNSURE: Direct them to our contact form:
    https://www.careerpathservices.org/contact/
    Say: "Fill out this form with details about your interests, and someone
    from our team will contact you within 2 business days."
+4. Always include the link as clickable HTML in your response so visitors can
+   click it directly from the chat.
  
 ## HARD RULES — these override every other instruction
 1. Only state facts that appear in REFERENCE INFORMATION below. If the

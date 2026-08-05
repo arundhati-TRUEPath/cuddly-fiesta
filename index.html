@@ -160,9 +160,20 @@ a:hover{color:var(--cps-green)}
   color:#fff;
   border-bottom-right-radius:5px;
 }
-.msg p{margin:0;white-space:pre-line}
+.msg p{margin:0;white-space:pre-line;word-break:break-word}
 .msg p + p{margin-top:.6em}
-.msg a{color:inherit}
+.msg.bot a{
+  color:var(--cps-green-dark);
+  font-weight:600;
+  text-decoration:underline;
+  border-radius:3px;
+  padding:2px 4px;
+}
+.msg.bot a:hover{
+  background:rgba(85,105,26,0.1);
+  text-decoration:none;
+}
+.msg.user a{color:#fff;text-decoration:underline}
 
 /* typing indicator */
 .typing{
@@ -375,14 +386,35 @@ a:focus-visible{
 
   function scrollDown() { log.scrollTop = log.scrollHeight; }
 
-  // Build a bubble. Splits blank-line-separated text into paragraphs and uses
-  // textContent throughout, so a model reply can never inject markup.
+  // Build a bubble. Splits blank-line-separated text into paragraphs.
+  // For bot messages: detects URLs and converts them to clickable links.
+  // For user messages: uses textContent for safety.
   function bubble(text, who) {
     var d = document.createElement('div');
     d.className = 'msg ' + who;
     String(text).trim().split(/\n{2,}/).forEach(function (part) {
       var p = document.createElement('p');
-      p.textContent = part.trim();
+
+      if (who === 'bot') {
+        // Parse URLs and create clickable links for bot messages
+        var parts = part.trim().split(/(https?:\/\/[^\s]+)/);
+        parts.forEach(function (segment) {
+          if (/^https?:\/\//.test(segment)) {
+            var a = document.createElement('a');
+            a.href = segment;
+            a.textContent = segment;
+            a.target = '_blank';
+            a.rel = 'noopener noreferrer';
+            p.appendChild(a);
+          } else {
+            p.appendChild(document.createTextNode(segment));
+          }
+        });
+      } else {
+        // User messages: use textContent for security
+        p.textContent = part.trim();
+      }
+
       d.appendChild(p);
     });
     log.appendChild(d);
