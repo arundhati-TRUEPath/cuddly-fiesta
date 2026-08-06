@@ -1,7 +1,8 @@
-# Never commit secrets. The OpenAI key lives in Netlify's environment
+# Never commit secrets. All API keys live in Netlify's environment
 # variables, never in this repository.
 .env
 .env.*
+!.env.example
 *.key
 
 # Netlify local dev

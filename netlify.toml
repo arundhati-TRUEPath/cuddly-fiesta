@@ -1,5 +1,5 @@
-# Netlify configuration for the Career Path Services chat widget.
-# Tells Netlify where the site files are and where the serverless function lives.
+# Netlify configuration for the True Path Navigator chatbot
+# (Career Path Services x TruePath — CareerPath Website Chatbot MVP)
 
 [build]
   publish = "."
@@ -13,9 +13,32 @@
     X-Content-Type-Options = "nosniff"
     Referrer-Policy = "strict-origin-when-cross-origin"
     Permissions-Policy = "geolocation=(), microphone=(), camera=()"
+    # No X-Frame-Options / frame-ancestors restriction here on purpose: this
+    # page is DESIGNED to be embedded in an iframe on careerpathservices.org
+    # (see README "Embedding on careerpathservices.org"). Setting
+    # SAMEORIGIN or a restrictive CSP here would break that embed. Once the
+    # final embedding domain is confirmed (PRD open question A1), replace
+    # this with a Content-Security-Policy "frame-ancestors" rule scoped to
+    # exactly that domain, rather than leaving framing wide open.
+    #
+    # Separately: whether TruePath's own site (azurecontainerapps.io) allows
+    # itself to be framed inside OUR iframe is controlled by TruePath's own
+    # server headers, not this file — confirm with the TruePath/CrowFlies
+    # team that their embed target permits framing.
 
-# The chat endpoint should never be cached — every answer is unique.
+# Chat and contact endpoints should never be cached — every answer/submission
+# is unique, and streaming responses must not be buffered by a CDN.
 [[headers]]
   for = "/api/chat"
   [headers.values]
     Cache-Control = "no-store"
+    X-Accel-Buffering = "no"
+
+[[headers]]
+  for = "/api/submit-contact"
+  [headers.values]
+    Cache-Control = "no-store"
+
+# Note: /api/chat and /api/submit-contact are published directly by each
+# function's own `export const config = { path: "..." }` — no redirect rules
+# needed.
