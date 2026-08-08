@@ -12,7 +12,7 @@
    True Path Navigator — CareerPath Website Chatbot MVP
    Brand: Open Sans; greens #6B861F / #55691A / #ADD136
    ============================================================ */
-
+ 
 :root{
   --cps-green:#6B861F;
   --cps-green-dark:#55691A;   /* white text on this = 6.0:1 */
@@ -29,7 +29,7 @@
   --radius:14px;
   --shadow:0 6px 24px rgba(43,49,54,.18);
 }
-
+ 
 html{box-sizing:border-box}
 *,*::before,*::after{box-sizing:inherit}
 body{
@@ -44,7 +44,7 @@ body{
 a{color:var(--cps-green-dark)}
 a:hover{color:var(--cps-green)}
 button{font-family:inherit}
-
+ 
 /* --- 1. collapsed launcher ----------------------------------- */
 .cps-chat-launcher{
   display:inline-flex;
@@ -62,7 +62,7 @@ button{font-family:inherit}
 .cps-chat-launcher:hover{background:#4A5B16}
 .cps-chat-launcher svg{width:30px;height:30px;display:block}
 .cps-chat-launcher[hidden]{display:none}
-
+ 
 /* --- 2. expanded panel -------------------------------------- */
 .cps-chat-panel{
   display:flex;
@@ -78,7 +78,7 @@ button{font-family:inherit}
   overflow:hidden;
 }
 .cps-chat-panel[hidden]{display:none}
-
+ 
 /* header */
 .cps-chat-header{
   display:flex;
@@ -130,7 +130,7 @@ button{font-family:inherit}
 .cps-chat-close:hover{background:rgba(255,255,255,.18)}
 .cps-chat-back svg,
 .cps-chat-close svg{width:20px;height:20px;display:block}
-
+ 
 /* body area swaps between views */
 .cps-chat-body{
   flex:1 1 auto;
@@ -140,8 +140,14 @@ button{font-family:inherit}
   display:flex;
   flex-direction:column;
 }
-.cps-view[hidden]{display:none}
-
+/* !important is required here: #view-entry, #view-county, #view-career,
+   and #view-chat each set their own `display:flex` for layout purposes,
+   and an ID selector otherwise beats this class+attribute selector in
+   specificity — without !important, [hidden] is set correctly by the JS
+   view-switcher but never actually hides anything, so every view stacks
+   visibly at once. */
+.cps-view[hidden]{display:none !important}
+ 
 /* --- entry-point view ----------------------------------------- */
 #view-entry{
   padding:22px 18px;
@@ -178,7 +184,7 @@ button{font-family:inherit}
   color:var(--cps-green-dark);
 }
 .entry-btn .sub{display:block;font-weight:400;font-size:13px;color:var(--cps-gray);margin-top:2px}
-
+ 
 /* --- county view ------------------------------------------------ */
 #view-county{padding:22px 18px;display:flex;flex-direction:column;gap:14px}
 #view-county h2{margin:0 0 4px;font-size:17px}
@@ -227,7 +233,7 @@ button{font-family:inherit}
   color:var(--cps-green-dark);font-weight:600;font-size:14px;
   text-decoration:underline;cursor:pointer;font:inherit;text-align:left;
 }
-
+ 
 /* --- career (TruePath) view -------------------------------------- */
 #view-career{display:flex;flex-direction:column;height:100%}
 #view-career .career-toolbar{
@@ -236,7 +242,7 @@ button{font-family:inherit}
 }
 #view-career .career-toolbar p{margin:0;font-size:13px;color:var(--cps-gray)}
 #truepath-frame{flex:1 1 auto;width:100%;border:none;background:#fff}
-
+ 
 /* --- chat view ------------------------------------------------- */
 #view-chat{display:flex;flex-direction:column;height:100%;min-height:0}
 #log{
@@ -249,7 +255,7 @@ button{font-family:inherit}
   gap:12px;
   min-height:0;
 }
-
+ 
 /* message bubbles */
 .msg-wrap{display:flex;flex-direction:column;max-width:88%}
 .msg-wrap.bot{align-self:flex-start}
@@ -283,7 +289,7 @@ button{font-family:inherit}
 .msg.bot a:hover{background:rgba(85,105,26,0.1)}
 .msg.user a{color:#fff;text-decoration:underline}
 .msg.crisis a{font-weight:700}
-
+ 
 .ai-label{
   font-size:11.5px;
   color:var(--cps-gray);
@@ -300,7 +306,7 @@ button{font-family:inherit}
   align-self:flex-start;
 }
 .citation-chip:hover{background:#E4EBD2}
-
+ 
 .msg-actions{display:flex;gap:8px;margin-top:6px}
 .msg-actions button{
   font-size:12.5px;font-weight:600;padding:5px 12px;
@@ -308,7 +314,7 @@ button{font-family:inherit}
   background:#fff;color:var(--cps-gray);cursor:pointer;
 }
 .msg-actions button:hover{border-color:var(--cps-green);color:var(--cps-green-dark)}
-
+ 
 /* typing / streaming indicator */
 .typing{
   align-self:flex-start;
@@ -321,7 +327,7 @@ button{font-family:inherit}
 .typing span:nth-child(3){animation-delay:.36s}
 @keyframes cps-typing{0%,60%,100%{opacity:.35;transform:translateY(0)}30%{opacity:1;transform:translateY(-3px)}}
 @media (prefers-reduced-motion:reduce){.typing span{animation:none;opacity:.6}}
-
+ 
 /* example questions (empty state) */
 .cps-chat-suggestions{align-self:stretch;list-style:none;margin:2px 0 6px;padding:0;display:flex;flex-direction:column;gap:8px}
 .cps-chat-suggestions button{
@@ -329,7 +335,7 @@ button{font-family:inherit}
   color:var(--cps-green-dark);background:#fff;border:1px solid var(--cps-green);border-radius:22px;cursor:pointer;
 }
 .cps-chat-suggestions button:hover{background:#F1F5E4;border-color:var(--cps-green-dark)}
-
+ 
 /* intake card (inline handoff form) */
 .intake-card{
   align-self:stretch;
@@ -352,7 +358,7 @@ button{font-family:inherit}
 .intake-status{font-size:13px;margin-top:4px}
 .intake-status.error{color:var(--crisis-border)}
 .intake-status.ok{color:var(--cps-green-dark);font-weight:600}
-
+ 
 /* input row */
 #form{flex:none;display:flex;align-items:flex-end;gap:10px;padding:12px;background:#fff;border-top:1px solid var(--line)}
 #input{
@@ -372,7 +378,7 @@ button{font-family:inherit}
   color:var(--crisis-border);background:#fff;border:1.5px solid var(--crisis-border);border-radius:24px;cursor:pointer;
 }
 #stop[hidden]{display:none}
-
+ 
 /* PII disclaimer + AI disclaimer */
 .cps-chat-disclaimer{
   flex:none;margin:0;padding:8px 16px 12px;background:#fff;font-size:12.5px;line-height:1.5;color:#585F65;
@@ -380,7 +386,7 @@ button{font-family:inherit}
 }
 .cps-chat-disclaimer strong{color:var(--ink)}
 .cps-chat-disclaimer a{color:var(--cps-green-dark);font-weight:600}
-
+ 
 /* visible keyboard focus on every interactive element */
 .cps-chat-launcher:focus-visible,
 .cps-chat-back:focus-visible,
@@ -403,10 +409,10 @@ a:focus-visible{
 .cps-chat-back:focus-visible,
 .cps-chat-close:focus-visible{outline-color:#fff}
 #input:focus-visible{border-color:var(--focus)}
-
+ 
 /* screen-reader-only helper */
 .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
-
+ 
 /* real-site placement: bottom-right corner */
 .cps-chat-dock{position:fixed;right:20px;bottom:20px;z-index:9999}
 @media (max-width:480px){
@@ -417,19 +423,19 @@ a:focus-visible{
 </style>
 </head>
 <body>
-
+ 
 <div class="cps-chat-dock">
-
+ 
   <!-- collapsed launcher -->
   <button type="button" id="chat-launcher" class="cps-chat-launcher" aria-label="Open True Path Navigator chat" aria-expanded="false">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
       <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/>
     </svg>
   </button>
-
+ 
   <!-- expanded panel -->
   <section id="chat-panel" class="cps-chat-panel" role="dialog" aria-modal="false" aria-label="True Path Navigator" hidden>
-
+ 
     <header class="cps-chat-header">
       <button type="button" id="chat-back" class="cps-chat-back" aria-label="Back" hidden>
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M15 18l-6-6 6-6"/></svg>
@@ -440,9 +446,9 @@ a:focus-visible{
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6L6 18"/></svg>
       </button>
     </header>
-
+ 
     <div class="cps-chat-body">
-
+ 
       <!-- ENTRY POINT VIEW -->
       <div id="view-entry" class="cps-view">
         <h2>What brings you here today?</h2>
@@ -466,7 +472,7 @@ a:focus-visible{
           </span>
         </button>
       </div>
-
+ 
       <!-- COUNTY VIEW -->
       <div id="view-county" class="cps-view" hidden>
         <h2>Where are you located?</h2>
@@ -480,7 +486,7 @@ a:focus-visible{
         <button type="button" class="primary-btn" id="county-continue">Continue</button>
         <button type="button" class="link-btn" id="county-skip">Skip for now</button>
       </div>
-
+ 
       <!-- CAREER (TruePath) VIEW -->
       <div id="view-career" class="cps-view" hidden>
         <div class="career-toolbar">
@@ -489,26 +495,26 @@ a:focus-visible{
         </div>
         <iframe id="truepath-frame" title="TruePath Career Navigator" loading="lazy"></iframe>
       </div>
-
+ 
       <!-- CHAT VIEW -->
       <div id="view-chat" class="cps-view" hidden>
         <div id="log" role="log" aria-live="polite" aria-label="Conversation" tabindex="0"></div>
-
+ 
         <form id="form" action="#" method="post">
           <input id="input" name="message" type="text" placeholder="Type your message…" autocomplete="off" aria-label="Type your message" required>
           <button type="button" id="stop" hidden>Stop</button>
           <button id="send" type="submit">Send</button>
         </form>
-
+ 
         <p class="cps-chat-disclaimer">
           <strong>AI-generated assistant</strong> — may not be fully accurate. Please don't share your Social Security number or other sensitive personal details here. For anything urgent, call <a href="tel:+15093267520">509-326-7520</a>.
         </p>
       </div>
-
+ 
     </div>
   </section>
 </div>
-
+ 
 <!-- Hidden static replica so Netlify's build-time bot can detect this form.
      Real submissions happen via JS fetch to "/" (see submitToNetlifyForms
      below) — this tag never renders and is never filled in directly. -->
@@ -524,33 +530,33 @@ a:focus-visible{
   <textarea name="message"></textarea>
   <input type="text" name="timestamp">
 </form>
-
+ 
 <script>
 (function () {
   "use strict";
-
+ 
   var PHONE = '509-326-7520';
   var TRUEPATH_URL = 'https://truepath-frontend.whitebush-febf0411.westus2.azurecontainerapps.io/';
   var WORKSOURCE_LOCATOR = 'https://worksource.my.site.com/worksourcewa/site-locator';
-
+ 
   // Keep this list in sync with SERVED_COUNTIES in netlify/functions/chat.mjs.
   var ALL_WA_COUNTIES = ["Adams","Asotin","Benton","Chelan","Clallam","Clark","Columbia","Cowlitz","Douglas","Ferry","Franklin","Garfield","Grant","Grays Harbor","Island","Jefferson","King","Kitsap","Kittitas","Klickitat","Lewis","Lincoln","Mason","Okanogan","Pacific","Pend Oreille","Pierce","San Juan","Skagit","Skamania","Snohomish","Spokane","Stevens","Thurston","Wahkiakum","Walla Walla","Whatcom","Whitman","Yakima"];
   var SERVED_COUNTIES = ["Adams","Asotin","Benton","Chelan","Clark","Columbia","Cowlitz","Douglas","Ferry","Franklin","Garfield","Grant","Island","King","Kittitas","Klickitat","Lincoln","Okanogan","Pend Oreille","Pierce","San Juan","Skagit","Snohomish","Spokane","Stevens","Thurston","Walla Walla","Wahkiakum","Whatcom","Whitman","Yakima"];
-
+ 
   var HANDOFF_LABEL = {
     jobseeker: { title: 'Connect me with staff', typeLabel: 'Job seeker' },
     employer: { title: 'Share your details', typeLabel: 'Employer / partner' },
     records: { title: 'Get help with records', typeLabel: 'Records / HR request' },
     no_answer: { title: 'Get a callback', typeLabel: 'Follow-up needed' }
   };
-
+ 
   var el = {};
   ['chat-launcher','chat-panel','chat-back','chat-close','view-entry','view-county','view-career','view-chat',
    'county-select','county-continue','county-skip','truepath-frame','career-ask',
    'log','form','input','send','stop'].forEach(function (id) {
     el[id.replace(/-([a-z])/g, function (_, c) { return c.toUpperCase(); })] = document.getElementById(id);
   });
-
+ 
   var state = {
     mode: null,        // 'jobseeker' | 'employer' | 'career'
     county: '',
@@ -560,7 +566,7 @@ a:focus-visible{
     controller: null,   // AbortController for the in-flight stream
     lastUserText: null  // for Retry
   };
-
+ 
   // --- county dropdown -------------------------------------------------
   ALL_WA_COUNTIES.forEach(function (c) {
     var opt = document.createElement('option');
@@ -568,7 +574,7 @@ a:focus-visible{
     opt.textContent = c;
     el.countySelect.appendChild(opt);
   });
-
+ 
   // --- view switching ----------------------------------------------------
   var VIEWS = ['entry', 'county', 'career', 'chat'];
   function showView(name, focusHeading) {
@@ -582,14 +588,14 @@ a:focus-visible{
       window.setTimeout(function () { el.input.focus(); }, 30);
     }
   }
-
+ 
   function trackEvent(name, params) {
     try {
       if (typeof window.gtag === 'function') window.gtag('event', name, params || {});
       if (Array.isArray(window.dataLayer)) window.dataLayer.push(Object.assign({ event: name }, params || {}));
     } catch (e) { /* analytics is optional — never break the widget over it */ }
   }
-
+ 
   // --- open / close -------------------------------------------------
   function openChat() {
     el.chatPanel.hidden = false;
@@ -608,12 +614,12 @@ a:focus-visible{
   document.addEventListener('keydown', function (e) {
     if (e.key === 'Escape' && !el.chatPanel.hidden) closeChat();
   });
-
+ 
   el.chatBack.addEventListener('click', function () {
     if (state.view === 'chat') { showView('county'); return; }
     showView('entry');
   });
-
+ 
   // --- entry point selection ---------------------------------------------
   document.querySelectorAll('.entry-btn').forEach(function (btn) {
     btn.addEventListener('click', function () {
@@ -627,7 +633,7 @@ a:focus-visible{
       }
     });
   });
-
+ 
   function openTruePath() {
     if (!el.truepathFrame.src) el.truepathFrame.src = TRUEPATH_URL;
     showView('career');
@@ -637,7 +643,7 @@ a:focus-visible{
     state.mode = state.mode === 'career' ? 'jobseeker' : state.mode;
     showView('county');
   });
-
+ 
   // --- county selection ---------------------------------------------------
   el.countyContinue.addEventListener('click', function () {
     state.county = el.countySelect.value;
@@ -647,13 +653,13 @@ a:focus-visible{
     state.county = '';
     proceedToChat();
   });
-
+ 
   function proceedToChat() {
     trackEvent('truepath_county_selected', { county: state.county || 'skipped', mode: state.mode });
     showView('chat');
     if (el.log.children.length === 0) startChat();
   }
-
+ 
   function startChat() {
     var served = state.county && SERVED_COUNTIES.indexOf(state.county) === -1;
     if (served) {
@@ -664,16 +670,16 @@ a:focus-visible{
         { kind: 'answer' }
       );
     }
-
+ 
     var greeting = state.mode === 'employer'
       ? "Hi, I'm the True Path Navigator. Tell me a bit about your organization and what you're looking for, and I'll get you connected with the right person."
       : "Hi, welcome to Career Path Services. Ask me about our programs and services, or start with one of these:";
     addBotBubble(greeting, { kind: 'answer', suggestions: state.mode === 'employer' ? null : ["What programs do you offer?", "How do I get started?"] });
   }
-
+ 
   // --- message rendering ---------------------------------------------------
   function scrollDown() { el.log.scrollTop = el.log.scrollHeight; }
-
+ 
   function renderInlineLinks(container, text) {
     var parts = text.split(/(https?:\/\/[^\s]+)/);
     parts.forEach(function (segment) {
@@ -686,7 +692,7 @@ a:focus-visible{
       }
     });
   }
-
+ 
   function renderBubbleText(bubbleEl, text, isBot) {
     bubbleEl.innerHTML = '';
     String(text).trim().split(/\n{2,}/).forEach(function (part) {
@@ -696,7 +702,7 @@ a:focus-visible{
       bubbleEl.appendChild(p);
     });
   }
-
+ 
   function addUserBubble(text) {
     var wrap = document.createElement('div');
     wrap.className = 'msg-wrap user';
@@ -707,7 +713,7 @@ a:focus-visible{
     el.log.appendChild(wrap);
     scrollDown();
   }
-
+ 
   function addBotBubble(text, opts) {
     opts = opts || {};
     var wrap = document.createElement('div');
@@ -716,12 +722,12 @@ a:focus-visible{
     bubble.className = 'msg bot' + (opts.kind === 'crisis' ? ' crisis' : '');
     renderBubbleText(bubble, text, true);
     wrap.appendChild(bubble);
-
+ 
     var label = document.createElement('div');
     label.className = 'ai-label';
     label.textContent = 'AI-generated';
     wrap.appendChild(label);
-
+ 
     if (opts.citation) {
       var chip = document.createElement('a');
       chip.className = 'citation-chip';
@@ -731,7 +737,7 @@ a:focus-visible{
       chip.textContent = '🔗 Source: ' + opts.citation.label;
       wrap.appendChild(chip);
     }
-
+ 
     if (opts.suggestions) {
       var ul = document.createElement('ul');
       ul.className = 'cps-chat-suggestions';
@@ -744,26 +750,26 @@ a:focus-visible{
       });
       wrap.appendChild(ul);
     }
-
+ 
     if (opts.handoff) {
       wrap.appendChild(buildIntakeCard(opts.handoff));
     }
-
+ 
     el.log.appendChild(wrap);
     scrollDown();
     return { wrap: wrap, bubble: bubble };
   }
-
+ 
   // --- intake card (handoff form) -----------------------------------------
   function buildIntakeCard(type) {
     var meta = HANDOFF_LABEL[type] || HANDOFF_LABEL.jobseeker;
     var card = document.createElement('div');
     card.className = 'intake-card';
-
+ 
     var h3 = document.createElement('h3'); h3.textContent = meta.title;
     var p = document.createElement('p'); p.textContent = "Review the details below, then send — a person will follow up within about two business days.";
     card.appendChild(h3); card.appendChild(p);
-
+ 
     function field(labelText, name, inputType, prefill) {
       var wrap = document.createElement('div'); wrap.className = 'intake-field';
       var label = document.createElement('label'); var id = 'intake-' + name;
@@ -776,38 +782,38 @@ a:focus-visible{
       card.appendChild(wrap);
       return input;
     }
-
+ 
     var nameInput = field('Name', 'name', 'text', '');
     var emailInput = field('Email', 'email', 'email', '');
     var phoneInput = field('Phone', 'phone', 'tel', '');
     var orgInput = state.mode === 'employer' ? field('Organization', 'org', 'text', '') : null;
     var lastUser = [...state.messages].reverse().find(function (m) { return m.role === 'user'; });
     var msgInput = field('What do you need help with?', 'message', 'textarea', lastUser ? lastUser.content : '');
-
+ 
     var consentWrap = document.createElement('label'); consentWrap.className = 'intake-consent';
     var consentBox = document.createElement('input'); consentBox.type = 'checkbox';
     consentWrap.appendChild(consentBox);
     consentWrap.appendChild(document.createTextNode(' I agree Career Path Services can contact me about this request.'));
     card.appendChild(consentWrap);
-
+ 
     var status = document.createElement('div'); status.className = 'intake-status'; status.setAttribute('aria-live', 'polite');
-
+ 
     var actions = document.createElement('div'); actions.className = 'intake-actions';
     var submitBtn = document.createElement('button'); submitBtn.type = 'button'; submitBtn.className = 'primary-btn'; submitBtn.textContent = 'Send to our team';
     var cancelBtn = document.createElement('button'); cancelBtn.type = 'button'; cancelBtn.className = 'secondary-btn'; cancelBtn.textContent = 'Not now';
     actions.appendChild(submitBtn); actions.appendChild(cancelBtn);
     card.appendChild(actions); card.appendChild(status);
-
+ 
     cancelBtn.addEventListener('click', function () { card.remove(); });
-
+ 
     submitBtn.addEventListener('click', function () {
       status.className = 'intake-status'; status.textContent = '';
       if (!nameInput.value.trim()) { status.className = 'intake-status error'; status.textContent = 'Please add your name.'; nameInput.focus(); return; }
       if (!emailInput.value.trim() && !phoneInput.value.trim()) { status.className = 'intake-status error'; status.textContent = 'Please add an email or phone number.'; emailInput.focus(); return; }
       if (!consentBox.checked) { status.className = 'intake-status error'; status.textContent = 'Please check the box so we know it\'s okay to reach out.'; consentBox.focus(); return; }
-
+ 
       submitBtn.disabled = true; submitBtn.textContent = 'Sending…';
-
+ 
       var payload = {
         type: type,
         name: nameInput.value.trim(),
@@ -817,9 +823,9 @@ a:focus-visible{
         org: orgInput ? orgInput.value.trim() : '',
         message: msgInput.value.trim()
       };
-
+ 
       submitToNetlifyForms(payload); // redundant store — fire independently
-
+ 
       fetch('/api/submit-contact', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -844,10 +850,10 @@ a:focus-visible{
           submitBtn.disabled = false; submitBtn.textContent = 'Send to our team';
         });
     });
-
+ 
     return card;
   }
-
+ 
   function submitToNetlifyForms(payload) {
     try {
       var body = new URLSearchParams();
@@ -864,7 +870,7 @@ a:focus-visible{
         .catch(function () { /* redundant store best-effort — don't block the visitor on it */ });
     } catch (e) { /* ignore */ }
   }
-
+ 
   function showTyping() {
     var t = document.createElement('div');
     t.className = 'typing';
@@ -875,14 +881,14 @@ a:focus-visible{
     scrollDown();
     return t;
   }
-
+ 
   function setBusy(state_) {
     state.busy = state_;
     el.send.disabled = state_;
     el.input.disabled = state_;
     el.stop.hidden = !state_;
   }
-
+ 
   // --- parse handoff / citation markers out of a finished bot reply --------
   function extractMarkers(fullText) {
     var handoff = null, citation = null;
@@ -892,7 +898,7 @@ a:focus-visible{
     if (citeMatch) { citation = { url: citeMatch[1].trim(), label: citeMatch[2].trim() }; fullText = fullText.replace(citeMatch[0], ''); }
     return { text: fullText.trim(), handoff: handoff, citation: citation };
   }
-
+ 
   // Strip a trailing partial marker (e.g. "...call us.\n\n[[HAND") so it's
   // never flashed as raw text while still streaming.
   function safeStreamDisplay(text) {
@@ -902,26 +908,26 @@ a:focus-visible{
     }
     return text;
   }
-
+ 
   // --- send / stream ---------------------------------------------------
   function sendMessage() {
     if (state.busy) return;
     var text = el.input.value.trim();
     if (!text) return;
-
+ 
     state.lastUserText = text;
     addUserBubble(text);
     state.messages.push({ role: 'user', content: text });
     el.input.value = '';
     runStream();
   }
-
+ 
   function runStream() {
     setBusy(true);
     var dots = showTyping();
     var controller = new AbortController();
     state.controller = controller;
-
+ 
     fetch('/api/chat', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -937,7 +943,7 @@ a:focus-visible{
         var full = '';
         var kind = 'answer';
         var wrapBubble = null;
-
+ 
         function pump() {
           return reader.read().then(function (result) {
             if (result.done) return finish();
@@ -965,7 +971,7 @@ a:focus-visible{
             return pump();
           });
         }
-
+ 
         function finish() {
           var parsed = extractMarkers(full);
           if (wrapBubble) {
@@ -987,7 +993,7 @@ a:focus-visible{
           state.controller = null;
           scrollDown();
         }
-
+ 
         return pump();
       })
       .catch(function (err) {
@@ -1001,7 +1007,7 @@ a:focus-visible{
         state.controller = null;
       });
   }
-
+ 
   function addRetryAction(wrap) {
     var actions = document.createElement('div');
     actions.className = 'msg-actions';
@@ -1019,11 +1025,11 @@ a:focus-visible{
     actions.appendChild(retry);
     wrap.appendChild(actions);
   }
-
+ 
   el.stop.addEventListener('click', function () {
     if (state.controller) state.controller.abort();
   });
-
+ 
   el.form.addEventListener('submit', function (e) {
     e.preventDefault();
     sendMessage();
